@@ -14,12 +14,12 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v2
 
-      - name: Set up Rust
-        uses: actions-rs/cargo@v1
-        with:
-          rust-version: 1.58.0
+      - name: Install Rust
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+          source $HOME/.cargo/env
 
       - name: Install dependencies
         run: |
