@@ -46,7 +46,7 @@ pub fn build(config: &Config) -> Result<(), GhcrError> {
         .status()
         .map_err(GhcrError::Io)?;
     if !status.success() {
-        error!("Docker build failed with status: {}", status);
+        error!("Docker build failed with status: {status}");
         return Err(GhcrError::BuildError(status.to_string()));
     }
     Ok(())
@@ -60,7 +60,7 @@ pub fn push(config: &Config) -> Result<(), GhcrError> {
         .status()
         .map_err(GhcrError::Io)?;
     if !status.success() {
-        error!("Docker push failed with status: {}", status);
+        error!("Docker push failed with status: {status}");
         return Err(GhcrError::PushError(status.to_string()));
     }
     Ok(())
@@ -79,14 +79,14 @@ pub fn login(auth: &Auth) -> Result<(), GhcrError> {
     child
         .stdin
         .as_mut()
-        .ok_or(GhcrError::LoginError("Failed to open stdin for docker login".to_string()))?
+        .ok_or(GhcrError::LoginError(
+            "Failed to open stdin for docker login".to_string(),
+        ))?
         .write_all(token.as_bytes())
         .map_err(GhcrError::Io)?;
-    let status = child
-        .wait()
-        .map_err(GhcrError::Io)?;
+    let status = child.wait().map_err(GhcrError::Io)?;
     if !status.success() {
-        error!("Docker login failed with status: {}", status);
+        error!("Docker login failed with status: {status}");
         return Err(GhcrError::LoginError(status.to_string()));
     }
     Ok(())

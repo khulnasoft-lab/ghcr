@@ -11,7 +11,10 @@ fn build_missing_tag() {
         auth: None,
     };
     let result = build(&config);
-    assert!(matches!(result, Err(GhcrError::BuildError(_)) | Err(GhcrError::Io(_)) | Err(GhcrError::Other(_))));
+    assert!(matches!(
+        result,
+        Err(GhcrError::BuildError(_)) | Err(GhcrError::Io(_)) | Err(GhcrError::Other(_))
+    ));
 }
 
 #[test]

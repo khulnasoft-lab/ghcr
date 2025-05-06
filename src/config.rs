@@ -1,8 +1,8 @@
 //! Configuration structures and loading logic for the ghcr CLI tool.
 
+use crate::commands::GhcrError;
 use serde::Deserialize;
 use std::fs;
-use crate::commands::GhcrError;
 
 /// Root configuration struct loaded from ghcr.toml.
 #[derive(Deserialize, Debug)]
@@ -34,7 +34,8 @@ pub struct Auth {
 /// Loads the configuration from ghcr.toml in the current directory.
 /// Returns a Config struct on success, or a String error message.
 pub fn load_config() -> Result<Config, GhcrError> {
-    let toml_str =
-        fs::read_to_string("ghcr.toml").map_err(|e| GhcrError::ConfigError(format!("Failed to read ghcr.toml: {}", e)))?;
-    toml::from_str(&toml_str).map_err(|e| GhcrError::ConfigError(format!("Invalid TOML format: {}", e)))
+    let toml_str = fs::read_to_string("ghcr.toml")
+        .map_err(|e| GhcrError::ConfigError(format!("Failed to read ghcr.toml: {e}")))?;
+    toml::from_str(&toml_str)
+        .map_err(|e| GhcrError::ConfigError(format!("Invalid TOML format: {e}")))
 }

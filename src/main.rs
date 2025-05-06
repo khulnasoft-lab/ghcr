@@ -39,9 +39,9 @@ fn run() -> Result<(), commands::GhcrError> {
         Commands::Build => build(&config),
         Commands::Push => push(&config),
         Commands::Login => {
-            let auth = config.auth.as_ref().ok_or(
-                commands::GhcrError::Other("No [auth] section in ghcr.toml. Please add GHCR credentials.".to_string()),
-            )?;
+            let auth = config.auth.as_ref().ok_or(commands::GhcrError::Other(
+                "No [auth] section in ghcr.toml. Please add GHCR credentials.".to_string(),
+            ))?;
             login(auth)
         }
     }
