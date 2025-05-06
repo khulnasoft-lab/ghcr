@@ -3,8 +3,8 @@ mod config;
 
 use clap::{Parser, Subcommand};
 use commands::*;
-use config::{load_config, Config};
-use log::{error, info};
+use config::load_config;
+use log::error;
 
 fn init_logging() {
     env_logger::init();

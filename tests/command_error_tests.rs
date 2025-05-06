@@ -1,4 +1,4 @@
-use ghcr::commands::{build, login, push, GhcrError};
+use ghcr::commands::{build, login, GhcrError};
 use ghcr::config::{Auth, Config, Image};
 
 #[test]

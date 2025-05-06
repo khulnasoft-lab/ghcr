@@ -1,4 +1,4 @@
-use ghcr::config::{load_config, Config};
+use ghcr::config::load_config;
 use std::env;
 use std::io::Write;
 use tempfile::NamedTempFile;
