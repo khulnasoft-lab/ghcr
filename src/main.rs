@@ -50,8 +50,8 @@ fn run() -> Result<(), commands::GhcrError> {
 fn main() {
     init_logging();
     if let Err(e) = run() {
-        error!("{}", e);
-        eprintln!("Error: {}", e);
+        error!("{e}");
+        eprintln!("Error: {e}");
         std::process::exit(1);
     }
 }
