@@ -1,4 +1,4 @@
-name: Build and Push Docker Image to GHCR
+name: CI - Build, Test, Docker Push
 
 on:
   push:
@@ -9,30 +9,56 @@ on:
       - main
 
 jobs:
-  build:
+  build-test-docker:
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        rust: [stable, beta, nightly]
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
-      - name: Install Rust
-        run: |
-          curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-          source $HOME/.cargo/env
+      - name: Set up Rust (${{ matrix.rust }})
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust }}
+          override: true
+          components: clippy
 
-      - name: Install dependencies
-        run: |
-          cargo build --release
+      - name: Cache cargo registry and build
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: ${{ runner.os }}-cargo-${{ matrix.rust }}-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build
+        run: cargo build --release
+
+      - name: Test
+        run: cargo test --all
+
+      - name: Clippy (Lint)
+        run: cargo clippy --all -- -D warnings
 
       - name: Log in to GHCR
-        run: |
-          echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+        if: github.ref == 'refs/heads/main' && matrix.rust == 'stable'
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
 
-      - name: Build Docker image
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}:latest .
+      - name: Set up QEMU
+        if: github.ref == 'refs/heads/main' && matrix.rust == 'stable'
+        uses: docker/setup-qemu-action@v3
 
-      - name: Push Docker image to GHCR
-        run: |
-          docker push ghcr.io/${{ github.repository }}:latest
+      - name: Set up Docker Buildx
+        if: github.ref == 'refs/heads/main' && matrix.rust == 'stable'
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        if: github.ref == 'refs/heads/main' && matrix.rust == 'stable'
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository }}:latest

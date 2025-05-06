@@ -1,16 +1,42 @@
+# ghcr.toml - Configuration for the ghcr CLI tool
+
 [package]
+# Name of the package/tool
 name = "ghcr"
+# Version of the configuration or tool
 version = "0.1.0"
+# Short description of the tool
 description = "Build and publish Docker images to GitHub Container Registry"
+# Repository URL for source code or issues
 repository = "https://github.com/khulnasoft-lab/ghcr"
 
 [image]
-# Full GHCR image tag
+# Full GHCR image tag (format: ghcr.io/<owner>/<repo>:<tag>)
 tag = "ghcr.io/khulnasoft-lab/ghcr:latest"
-# Docker context path
+# Docker build context path (relative or absolute, default is '.')
 context = "."
 
 [auth]
-# Optional: Username and token for login (use env vars for safety)
+# Username for GHCR (GitHub Container Registry)
 username = "khulnasoft-lab"
+# Name of the environment variable holding your GHCR token (do NOT hardcode tokens)
 token_env = "GHCR_TOKEN"  # Expected to be set in the environment
+
+# ---
+# Example for supporting multiple environments/profiles (uncomment and customize):
+#
+#[profile.dev.image]
+#tag = "ghcr.io/khulnasoft-lab/ghcr:dev"
+#context = "."
+#
+#[profile.prod.image]
+#tag = "ghcr.io/khulnasoft-lab/ghcr:latest"
+#context = "."
+#
+#[profile.dev.auth]
+#username = "dev-user"
+#token_env = "DEV_GHCR_TOKEN"
+#
+#[profile.prod.auth]
+#username = "prod-user"
+#token_env = "PROD_GHCR_TOKEN"

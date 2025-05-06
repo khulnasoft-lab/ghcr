@@ -1,9 +1,19 @@
 # ghcr
 
-`ghcr` is a simple CLI tool for building and pushing Docker images to the GitHub Container Registry (GHCR). This tool also supports logging in to GHCR using Docker credentials securely via environment variables.
+[![CI](https://github.com/khulnasoft-lab/ghcr/actions/workflows/ci.yml/badge.svg)](https://github.com/khulnasoft-lab/ghcr/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/ghcr.svg)](https://crates.io/crates/ghcr)
+[![Docs.rs](https://docs.rs/ghcr/badge.svg)](https://docs.rs/ghcr)
+[![License: MIT OR Apache-2.0](https://img.shields.io/badge/license-MIT%20OR%20Apache--2.0-blue)](LICENSE)
+
+`ghcr` is a CLI tool to build and publish Docker images to GitHub Container Registry (GHCR). This tool also supports logging in to GHCR using Docker credentials securely via environment variables.
+
+---
 
 ## Features
-
+- **Modularized Rust code** for easy maintenance and extensibility
+- **Robust error handling** and informative logging
+- **Modern CI/CD** with matrix Rust testing and Docker build/push
+- **Comprehensive tests** for config, commands, and integration scenarios
 - **Build Docker Image**: Build a Docker image using the provided `Dockerfile` and context.
 - **Push Docker Image**: Push the built Docker image to GitHub Container Registry (GHCR).
 - **Login to GHCR**: Login to GHCR using your username and a token stored in an environment variable.
@@ -26,3 +36,80 @@ You can download the pre-built binary from the GitHub releases page.
    ```bash
    git clone https://github.com/khulnasoft-lab/ghcr.git
    cd ghcr
+   ```
+2. Build the binary:
+   ```bash
+   cargo build --release
+   ```
+3. The binary will be in `target/release/ghcr`.
+
+## Configuration
+
+Create a `ghcr.toml` file in your project root. Example:
+
+```toml
+[package]
+name = "ghcr"
+version = "0.1.0"
+description = "Build and publish Docker images to GitHub Container Registry"
+repository = "https://github.com/khulnasoft-lab/ghcr"
+
+[image]
+tag = "ghcr.io/khulnasoft-lab/ghcr:latest"
+context = "."
+
+[auth]
+username = "khulnasoft-lab"
+token_env = "GHCR_TOKEN"  # Set this environment variable with your GHCR token
+```
+
+## Usage Examples
+
+### Build Docker Image
+```bash
+RUST_LOG=info ./target/release/ghcr build
+```
+
+### Push Docker Image
+```bash
+RUST_LOG=info ./target/release/ghcr push
+```
+
+### Login to GHCR
+```bash
+export GHCR_TOKEN=your_token_here
+RUST_LOG=info ./target/release/ghcr login
+```
+
+## .dockerignore
+A recommended `.dockerignore` is included to keep your Docker build context clean and secure. Edit as needed for your project.
+
+## Troubleshooting & Common Errors
+
+- **Docker Daemon Not Running:**
+  - Error: `Cannot connect to the Docker daemon...`
+  - Solution: Ensure Docker is installed and running (`docker info`).
+- **Token Environment Variable Not Set:**
+  - Error: `Token environment variable 'GHCR_TOKEN' not set`
+  - Solution: Export the variable before running `login`.
+- **Invalid TOML Format:**
+  - Error: `Invalid TOML format: ...`
+  - Solution: Check your `ghcr.toml` for syntax errors.
+- **Permission Issues:**
+  - Ensure you have permission to access the Docker socket and to push images to GHCR.
+
+## Security Best Practices
+- Use environment variables for secrets (never hardcode tokens).
+- Use the provided `.dockerignore` to avoid leaking sensitive files into your Docker images.
+- Run containers as a non-root user (see the provided Dockerfile).
+
+## Testing
+- Add unit and integration tests for command logic and configuration parsing (see `src/main.rs`).
+- Example test frameworks: [`assert_cmd`](https://docs.rs/assert_cmd), [`tempfile`](https://docs.rs/tempfile).
+
+## CI/CD
+- Add workflows in `.github/workflows/` for linting, testing, and building Docker images.
+- Example: GitHub Actions for Rust and Docker.
+
+## License
+MIT OR Apache-2.0

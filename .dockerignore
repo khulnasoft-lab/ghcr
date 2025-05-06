@@ -1,0 +1,23 @@
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore build output
+/target
+
+# Ignore local config and environment files
+*.env
+*.toml.local
+
+# Ignore editor/project files
+*.swp
+*.swo
+*.bak
+*.tmp
+.DS_Store
+.idea
+.vscode
+
+# Ignore test and coverage output
+/coverage
+/tests
