@@ -1,4 +1,4 @@
-use ghcr::commands::{build, login, push};
+use ghcr::commands::{build, login, push, GhcrError};
 use ghcr::config::{Auth, Config, Image};
 
 #[test]
@@ -11,7 +11,7 @@ fn build_missing_tag() {
         auth: None,
     };
     let result = build(&config);
-    assert!(result.is_err());
+    assert!(matches!(result, Err(GhcrError::BuildError(_)) | Err(GhcrError::Io(_)) | Err(GhcrError::Other(_))));
 }
 
 #[test]
@@ -22,5 +22,5 @@ fn login_missing_token_env() {
     };
     std::env::remove_var("SOME_FAKE_TOKEN_ENV");
     let result = login(&auth);
-    assert!(result.is_err());
+    assert!(matches!(result, Err(GhcrError::TokenEnvMissing(_))));
 }

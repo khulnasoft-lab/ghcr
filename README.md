@@ -18,6 +18,70 @@
 - **Push Docker Image**: Push the built Docker image to GitHub Container Registry (GHCR).
 - **Login to GHCR**: Login to GHCR using your username and a token stored in an environment variable.
 
+---
+
+## GitHub Action Usage
+
+[![GitHub Marketplace](https://img.shields.io/badge/marketplace-ghcr--action-blue?logo=github)](https://github.com/marketplace/actions/ghcr)
+
+You can use this project as a GitHub Action to build, login, and push Docker images to GHCR in your CI workflows.
+
+**Basic Example:**
+```yaml
+- name: Build and push Docker image
+  uses: khulnasoft-lab/ghcr@v1
+  with:
+    command: build
+    config: ./ghcr.toml
+    token: ${{ secrets.GHCR_TOKEN }}
+```
+
+**Advanced Multi-Step Example:**
+```yaml
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Login to GHCR
+        uses: khulnasoft-lab/ghcr@v1
+        with:
+          command: login
+          config: ./ghcr.toml
+          token: ${{ secrets.GHCR_TOKEN }}
+      - name: Build Docker image
+        uses: khulnasoft-lab/ghcr@v1
+        with:
+          command: build
+          config: ./ghcr.toml
+      - name: Push Docker image
+        uses: khulnasoft-lab/ghcr@v1
+        with:
+          command: push
+          config: ./ghcr.toml
+          token: ${{ secrets.GHCR_TOKEN }}
+```
+
+- Pin to a specific version, e.g., `@v1`, for stability in your workflows.
+- See the [action.yml](./action.yml) for all available inputs.
+
+---
+
+## Versioning & Releases
+
+To use a stable version of this action, pin to a release tag (e.g., `@v1` or `@v1.0.0`).
+
+To publish a new release:
+1. Commit all changes to `main`.
+2. Tag a release:
+   ```sh
+   git tag v1.0.0
+   git push --tags
+   ```
+3. The action will appear on the GitHub Marketplace and can be referenced as `khulnasoft-lab/ghcr@v1.0.0` in workflows.
+
+---
+
 ## Requirements
 
 - Docker: You need Docker installed on your machine.

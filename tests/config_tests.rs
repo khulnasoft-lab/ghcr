@@ -1,4 +1,5 @@
 use ghcr::config::{load_config, Config};
+use ghcr::commands::GhcrError;
 use std::io::Write;
 use tempfile::NamedTempFile;
 
@@ -29,6 +30,9 @@ fn parse_invalid_toml() {
     write!(file, "{}", toml).unwrap();
     let path = file.path();
     let toml_str = std::fs::read_to_string(path).unwrap();
-    let result: Result<Config, _> = toml::from_str(&toml_str);
-    assert!(result.is_err());
+    let result = toml::from_str::<Config>(&toml_str);
+    assert!(result.is_err()); // TOML parse error
+    // Now test our loader, which should return GhcrError::ConfigError
+    let result = load_config();
+    assert!(matches!(result, Err(GhcrError::ConfigError(_))));
 }

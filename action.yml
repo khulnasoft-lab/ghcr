@@ -1,0 +1,63 @@
+name: 'ghcr'
+description: >-
+  Build, login, and push Docker images to GitHub Container Registry (GHCR) with a simple, secure CLI action. Supports configuration via TOML, environment variables for secrets, and robust error handling. Ideal for CI/CD pipelines.
+
+  **Example usage:**
+  ```yaml
+  - name: Build and push Docker image
+    uses: khulnasoft-lab/ghcr@v1
+    with:
+      command: build
+      config: ./ghcr.toml
+      token: ${{ secrets.GHCR_TOKEN }}
+  ```
+
+  **Example output:**
+  ```
+  [INFO] Building Docker image: ghcr.io/user/repo:tag
+  Successfully built abcdef123456
+  [INFO] Logging in to GHCR as user
+  Login Succeeded
+  ```
+
+  [Learn more](https://github.com/khulnasoft-lab/ghcr)
+
+inputs:
+  command:
+    description: >-
+      The ghcr command to run. One of:
+      - `build`: Build the Docker image
+      - `push`: Push the Docker image to GHCR
+      - `login`: Login to GHCR using Docker credentials
+    required: true
+  config:
+    description: >-
+      Path to the `ghcr.toml` config file. Optional, defaults to `./ghcr.toml` in the workspace.
+    required: false
+    default: './ghcr.toml'
+  token:
+    description: >-
+      GitHub Container Registry token. Required for `login` and `push` commands. Should be provided as a secret.
+    required: false
+
+outputs:
+  image-tag:
+    description: 'The Docker image tag that was built or pushed.'
+
+branding:
+  icon: 'box'
+  color: 'blue'
+
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.command }}
+
+# Marketplace metadata
+categories:
+  - deployment
+  - docker
+  - github-container-registry
+  - continuous-integration
+repository: https://github.com/khulnasoft-lab/ghcr

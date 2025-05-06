@@ -32,7 +32,7 @@ enum Commands {
     Login,
 }
 
-fn run() -> Result<(), String> {
+fn run() -> Result<(), commands::GhcrError> {
     let cli = Cli::parse();
     let config = load_config()?;
     match cli.command {
@@ -40,7 +40,7 @@ fn run() -> Result<(), String> {
         Commands::Push => push(&config),
         Commands::Login => {
             let auth = config.auth.as_ref().ok_or(
-                "No [auth] section in ghcr.toml. Please add GHCR credentials.".to_string(),
+                commands::GhcrError::Other("No [auth] section in ghcr.toml. Please add GHCR credentials.".to_string()),
             )?;
             login(auth)
         }
