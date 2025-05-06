@@ -3,7 +3,7 @@ WORKDIR /usr/src/ghcr
 COPY . .
 RUN cargo install --path .
 
-FROM debian:bullseye-slim@sha256:1d2b8b5e1e3c3d8b3b3c2a1f2e1d8e1b2c3a4e5b6f7a8b9c0d1e2f3a4b5c6d7e8
+FROM debian:bullseye-slim@sha256:fdd75562fdcde1039c2480a1ea1cd2cf03b18b6e4cb551cabb03bde66ade8a5d
 LABEL org.opencontainers.image.title="ghcr" \
       org.opencontainers.image.description="A CLI tool to build and publish Docker images to GHCR" \
       org.opencontainers.image.authors="Md Sulaiman <dev.sulaiman@icloud.com>"
