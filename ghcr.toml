@@ -1,0 +1,16 @@
+[package]
+name = "ghcr"
+version = "0.1.0"
+description = "Build and publish Docker images to GitHub Container Registry"
+repository = "https://github.com/khulnasoft-lab/ghcr"
+
+[image]
+# Full GHCR image tag
+tag = "ghcr.io/khulnasoft-lab/ghcr:latest"
+# Docker context path
+context = "."
+
+[auth]
+# Optional: Username and token for login (use env vars for safety)
+username = "khulnasoft-lab"
+token_env = "GHCR_TOKEN"  # Expected to be set in the environment
